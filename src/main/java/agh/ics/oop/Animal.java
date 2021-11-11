@@ -2,13 +2,22 @@ package agh.ics.oop;
 
 public class Animal {
 
+    public Animal(IWorldMap map) {
+        this(map, new Vector2d(2, 2));
+    }
+
+    public Animal(IWorldMap map, Vector2d initialPosition) {
+        this.map = map;
+        this.position = initialPosition;
+    }
+
     public void move(MoveDirection direction) {
         switch(direction) {
             case FORWARD -> {
-                moveForward(position.add(orientation.toUnitVector()));
+                moveIfPossible(position.add(orientation.toUnitVector()));
             }
             case BACKWARD -> {
-                moveForward(position.subtract(orientation.toUnitVector()));
+                moveIfPossible(position.subtract(orientation.toUnitVector()));
             }
             case RIGHT -> {
                 orientation = orientation.next();
@@ -17,6 +26,11 @@ public class Animal {
                 orientation = orientation.previous();
             }
         }
+    }
+
+    private void moveIfPossible(Vector2d destination) {
+        if(map.canMoveTo(destination))
+            position = destination;
     }
 
     public Vector2d getPosition() {
@@ -29,18 +43,15 @@ public class Animal {
 
     @Override
     public String toString() {
-        return "Position: " + position.toString() + "; Direction: " + orientation.toString();
+        return switch (orientation) {
+            case NORTH -> "N";
+            case EAST -> "E";
+            case WEST -> "W";
+            case SOUTH -> "S";
+        };
     }
 
-    private void moveForward(Vector2d nextPos) {
-        if (nextPos.follows(mapMin) && nextPos.precedes(mapMax)) {
-            position = nextPos;
-        }
-    }
-
-    private Vector2d position = new Vector2d(2, 2);
+    private final IWorldMap map;
+    private Vector2d position;
     private MapDirection orientation = MapDirection.NORTH;
-
-    private final Vector2d mapMax = new Vector2d(4, 4);
-    private final Vector2d mapMin = new Vector2d(0, 0);
 }
