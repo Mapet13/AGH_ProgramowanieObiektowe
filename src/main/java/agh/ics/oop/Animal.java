@@ -1,6 +1,6 @@
 package agh.ics.oop;
 
-public class Animal {
+public class Animal implements IMapElement {
 
     public Animal(IWorldMap map) {
         this(map, new Vector2d(2, 2));
