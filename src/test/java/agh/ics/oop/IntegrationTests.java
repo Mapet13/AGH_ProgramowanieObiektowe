@@ -18,6 +18,8 @@ public class IntegrationTests {
         IEngine engine = new SimulationEngine(directions, map, positions);
         engine.run();
 
+        System.out.println(map.toString());
+
         assertTrue(map.isOccupied(new Vector2d(3, 5)));
         assertTrue(map.isOccupied(new Vector2d(2, 0)));
     }

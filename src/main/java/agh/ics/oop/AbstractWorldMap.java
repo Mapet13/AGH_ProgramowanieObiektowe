@@ -1,8 +1,14 @@
 package agh.ics.oop;
 
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-public abstract class AbstractWorldMap implements IWorldMap {
+public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver {
+
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        animals.put(newPosition, animals.remove(oldPosition));
+    }
 
     @Override
     public boolean canMoveTo(Vector2d position) {
@@ -21,7 +27,8 @@ public abstract class AbstractWorldMap implements IWorldMap {
         if (!canMoveTo(position))
             return false;
 
-        animals.add(animal);
+        animal.addObserver(this);
+        animals.put(position, animal);
 
         return true;
     }
@@ -32,12 +39,12 @@ public abstract class AbstractWorldMap implements IWorldMap {
         return visualizer.draw(getLowerLeft(), getUpperRight());
     }
 
-    protected Object specificObjectAt(ArrayList<? extends IMapElement> objects, Vector2d position) {
-        return objects.stream().filter(obj -> obj.getPosition().equals(position)).findAny().orElse(null);
+    protected Object specificObjectAt(Map<Vector2d, ? extends IMapElement> objects, Vector2d position) {
+        return objects.get(position);
     }
 
     protected abstract Vector2d getLowerLeft();
     protected abstract Vector2d getUpperRight();
 
-    protected ArrayList<Animal> animals = new ArrayList<>();
+    protected Map<Vector2d, Animal> animals = new LinkedHashMap<>();
 }

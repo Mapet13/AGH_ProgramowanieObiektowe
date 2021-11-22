@@ -1,6 +1,8 @@
 package agh.ics.oop;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class GrassField extends AbstractWorldMap {
@@ -15,7 +17,7 @@ public class GrassField extends AbstractWorldMap {
             do {
                 pos = new Vector2d(getRandomInRange(rand, maxCoordinate, minCoordinate), getRandomInRange(rand, maxCoordinate, minCoordinate));
             } while (isOccupied(pos));
-            grasses.add(new Grass(pos));
+            grasses.put(pos, new Grass(pos));
         }
     }
 
@@ -35,14 +37,14 @@ public class GrassField extends AbstractWorldMap {
             Vector2d lowerLeft;
 
             if (!animals.isEmpty())
-                lowerLeft = animals.get(0).getPosition();
+                lowerLeft = animals.values().stream().findAny().get().getPosition();
             else
-                lowerLeft = grasses.get(0).getPosition();
+                lowerLeft = grasses.values().stream().findAny().get().getPosition();
 
-            for(Animal animal : animals)
+            for(Animal animal : animals.values())
                 lowerLeft = lowerLeft.lowerLeft(animal.getPosition());
 
-            for(Grass grass : grasses)
+            for(Grass grass : grasses.values())
                 lowerLeft = lowerLeft.lowerLeft(grass.getPosition());
 
             return lowerLeft;
@@ -57,14 +59,14 @@ public class GrassField extends AbstractWorldMap {
             Vector2d upperRight;
 
             if (!animals.isEmpty())
-                upperRight = animals.get(0).getPosition();
+                upperRight = animals.values().stream().findAny().get().getPosition();
             else
-                upperRight = grasses.get(0).getPosition();
+                upperRight = grasses.values().stream().findAny().get().getPosition();
 
-            for(Animal animal : animals)
+            for(Animal animal : animals.values())
                 upperRight = upperRight.upperRight(animal.getPosition());
 
-            for(Grass grass : grasses)
+            for(Grass grass : grasses.values())
                 upperRight = upperRight.upperRight(grass.getPosition());
 
             return upperRight;
@@ -75,7 +77,7 @@ public class GrassField extends AbstractWorldMap {
         return rand.nextInt(max - min) + min;
     }
 
-    private final ArrayList<Grass> grasses = new ArrayList<>();
+    private final Map<Vector2d, Grass> grasses = new LinkedHashMap<>();
 
 }
 
