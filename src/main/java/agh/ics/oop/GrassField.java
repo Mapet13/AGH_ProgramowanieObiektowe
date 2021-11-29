@@ -7,7 +7,13 @@ import java.util.Random;
 
 public class GrassField extends AbstractWorldMap {
 
-    public GrassField(int grassCount) {
+    public GrassField (int grassCount) {
+        this(new MapBoundary(), grassCount);
+    }
+
+    public GrassField(MapBoundary mapBoundary, int grassCount) {
+        this.mapBoundary = mapBoundary;
+
         final int minCoordinate = 0;
         final int maxCoordinate = (int) Math.round(Math.sqrt(grassCount * 10));
 
@@ -17,8 +23,16 @@ public class GrassField extends AbstractWorldMap {
             do {
                 pos = new Vector2d(getRandomInRange(rand, maxCoordinate, minCoordinate), getRandomInRange(rand, maxCoordinate, minCoordinate));
             } while (isOccupied(pos));
-            grasses.put(pos, new Grass(pos));
+            Grass grass = new Grass(pos);
+            grasses.put(pos, grass);
+            mapBoundary.add(grass);
         }
+    }
+
+    @Override
+    public void place(Animal animal) throws IllegalArgumentException {
+        super.place(animal);
+        mapBoundary.add(animal);
     }
 
     @Override
@@ -31,46 +45,12 @@ public class GrassField extends AbstractWorldMap {
 
     @Override
     protected Vector2d getLowerLeft() {
-        if (animals.isEmpty() && grasses.isEmpty()) {
-            return new Vector2d(0, 0); // emergency value
-        } else {
-            Vector2d lowerLeft;
-
-            if (!animals.isEmpty())
-                lowerLeft = animals.values().stream().findAny().get().getPosition();
-            else
-                lowerLeft = grasses.values().stream().findAny().get().getPosition();
-
-            for(Animal animal : animals.values())
-                lowerLeft = lowerLeft.lowerLeft(animal.getPosition());
-
-            for(Grass grass : grasses.values())
-                lowerLeft = lowerLeft.lowerLeft(grass.getPosition());
-
-            return lowerLeft;
-        }
+        return mapBoundary.getLowerLeft();
     }
 
     @Override
     protected Vector2d getUpperRight() {
-        if (animals.isEmpty() && grasses.isEmpty()) {
-            return new Vector2d(5, 5); // emergency value
-        } else {
-            Vector2d upperRight;
-
-            if (!animals.isEmpty())
-                upperRight = animals.values().stream().findAny().get().getPosition();
-            else
-                upperRight = grasses.values().stream().findAny().get().getPosition();
-
-            for(Animal animal : animals.values())
-                upperRight = upperRight.upperRight(animal.getPosition());
-
-            for(Grass grass : grasses.values())
-                upperRight = upperRight.upperRight(grass.getPosition());
-
-            return upperRight;
-        }
+        return mapBoundary.getUpperRight();
     }
 
     private int getRandomInRange(Random rand, int max, int min) {
@@ -78,7 +58,7 @@ public class GrassField extends AbstractWorldMap {
     }
 
     private final Map<Vector2d, Grass> grasses = new LinkedHashMap<>();
-
+    private final MapBoundary mapBoundary;
 }
 
 

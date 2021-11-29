@@ -18,8 +18,6 @@ public class IntegrationTests {
         IEngine engine = new SimulationEngine(directions, map, positions);
         engine.run();
 
-        System.out.println(map.toString());
-
         assertTrue(map.isOccupied(new Vector2d(3, 5)));
         assertTrue(map.isOccupied(new Vector2d(2, 0)));
     }
@@ -72,14 +70,8 @@ public class IntegrationTests {
         ArrayList<MoveDirection> directions = new OptionsParser().parse(args);
         IWorldMap map = new RectangularMap(10, 5);
         ArrayList<Vector2d> positions = new ArrayList<>(Arrays.asList(new Vector2d(200, 2000), new Vector2d(-2, -3)));
-        IEngine engine = new SimulationEngine(directions, map, positions);
-        engine.run();
 
-        for (int x = 0; x < 10; x++) {
-            for (int y = 0; y < 10; y++) {
-                assertFalse(map.isOccupied(new Vector2d(x, y)));
-            }
-        }
+        assertThrows(IllegalArgumentException.class, () -> new SimulationEngine(directions, map, positions));
     }
 
     @Test

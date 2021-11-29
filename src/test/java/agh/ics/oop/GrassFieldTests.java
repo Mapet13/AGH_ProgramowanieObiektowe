@@ -9,8 +9,8 @@ public class GrassFieldTests {
     void testPLaceAnimal() {
         GrassField map = new GrassField(0);
 
-        assertTrue(map.place(new Animal(map, new Vector2d(1, 1))));
-        assertFalse(map.place(new Animal(map, new Vector2d(1, 1))));
+        assertDoesNotThrow(() -> map.place(new Animal(map, new Vector2d(1, 1))));
+        assertThrows(IllegalArgumentException.class, () -> map.place(new Animal(map, new Vector2d(1, 1))));
     }
 
     @Test
