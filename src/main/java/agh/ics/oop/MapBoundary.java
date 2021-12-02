@@ -16,23 +16,23 @@ public class MapBoundary implements IPositionChangeObserver {
     }
 
     public Vector2d getLowerLeft() {
-        return new Vector2d(ox.first(), oy.first());
+        return new Vector2d(ox.first().x, oy.first().y);
     }
 
     public Vector2d getUpperRight() {
-        return new Vector2d(ox.last(), oy.last());
+        return new Vector2d(ox.last().x, oy.last().y);
     }
 
     private void add(Vector2d pos) {
-        ox.add(pos.x);
-        oy.add(pos.y);
+        ox.add(pos);
+        oy.add(pos);
     }
 
     private void remove(Vector2d pos) {
-        ox.remove(pos.x);
-        oy.remove(pos.y);
+        ox.remove(pos);
+        oy.remove(pos);
     }
 
-    private SortedSet<Integer> ox = new TreeSet<>();
-    private SortedSet<Integer> oy = new TreeSet<>();
+    private SortedSet<Vector2d> ox = new TreeSet<>(Comparator.comparingInt(o -> o.x));
+    private SortedSet<Vector2d> oy = new TreeSet<>(Comparator.comparingInt(o -> o.y));
 }

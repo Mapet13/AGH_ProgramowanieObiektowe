@@ -1,31 +1,33 @@
 package agh.ics.oop;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 
 public class GrassField extends AbstractWorldMap {
 
-    public GrassField (int grassCount) {
+    public GrassField(int grassCount) {
         this(new MapBoundary(), grassCount);
     }
 
     public GrassField(MapBoundary mapBoundary, int grassCount) {
         this.mapBoundary = mapBoundary;
 
-        final int minCoordinate = 0;
-        final int maxCoordinate = (int) Math.round(Math.sqrt(grassCount * 10));
+        maxGrassCoordinate = (int) Math.round(Math.sqrt(grassCount * 10));
 
         final Random rand = new Random();
         for (int i = 0; i < grassCount; i++) {
-            Vector2d pos;
-            do {
-                pos = new Vector2d(getRandomInRange(rand, maxCoordinate, minCoordinate), getRandomInRange(rand, maxCoordinate, minCoordinate));
-            } while (isOccupied(pos));
-            Grass grass = new Grass(pos);
-            grasses.put(pos, grass);
-            mapBoundary.add(grass);
+            putNewGrass(rand);
+        }
+    }
+
+    @Override
+    public void positionChanged(Vector2d oldPosition, Vector2d newPosition) {
+        super.positionChanged(oldPosition, newPosition);
+
+        if (grasses.containsKey(newPosition)) {
+            grasses.remove(newPosition);
+            putNewGrass(new Random());
         }
     }
 
@@ -53,12 +55,25 @@ public class GrassField extends AbstractWorldMap {
         return mapBoundary.getUpperRight();
     }
 
-    private int getRandomInRange(Random rand, int max, int min) {
-        return rand.nextInt(max - min) + min;
+    private int getRandomInCorrectRange(Random rand) {
+        return rand.nextInt(maxGrassCoordinate - minGrassCoordinate) + minGrassCoordinate;
+    }
+
+    private void putNewGrass(Random rand) {
+        Vector2d pos;
+        do {
+            pos = new Vector2d(getRandomInCorrectRange(rand), getRandomInCorrectRange(rand));
+        } while (isOccupied(pos));
+        Grass grass = new Grass(pos);
+        grasses.put(pos, grass);
+        mapBoundary.add(grass);
     }
 
     private final Map<Vector2d, Grass> grasses = new LinkedHashMap<>();
     private final MapBoundary mapBoundary;
+    private final int minGrassCoordinate = 0;
+    private final int maxGrassCoordinate;
+
 }
 
 
