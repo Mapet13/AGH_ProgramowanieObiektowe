@@ -1,9 +1,10 @@
 package agh.ics.oop;
 
+import java.util.List;
 import java.util.ArrayList;
 
 public class OptionsParser {
-    public ArrayList<MoveDirection> parse(String[] input) throws IllegalArgumentException {
+    public ArrayList<MoveDirection> parse(List<String> input) throws IllegalArgumentException {
         ArrayList<MoveDirection> directions = new ArrayList<>();
         for(String arg : input) {
             switch (arg) {

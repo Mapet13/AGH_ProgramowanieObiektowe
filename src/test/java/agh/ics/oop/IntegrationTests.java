@@ -12,7 +12,7 @@ public class IntegrationTests {
     @Test
     void testFinalPosition() {
         String[] args = {"f", "b", "r", "l", "f", "f", "r", "r", "f", "f", "f", "f", "f" ,"f", "f", "f"};
-        ArrayList<MoveDirection> directions = new OptionsParser().parse(args);
+        ArrayList<MoveDirection> directions = new OptionsParser().parse(Arrays.stream(args).toList());
         IWorldMap map = new RectangularMap(10, 5);
         ArrayList<Vector2d> positions = new ArrayList<>(Arrays.asList(new Vector2d(2, 2), new Vector2d(3, 4)));
         IEngine engine = new SimulationEngine(directions, map, positions);
@@ -25,7 +25,7 @@ public class IntegrationTests {
     @Test
     void testNoMoves() {
         String[] args = {};
-        ArrayList<MoveDirection> directions = new OptionsParser().parse(args);
+        ArrayList<MoveDirection> directions = new OptionsParser().parse(Arrays.stream(args).toList());
         IWorldMap map = new RectangularMap(10, 5);
         ArrayList<Vector2d> positions = new ArrayList<>(Arrays.asList(new Vector2d(2, 2), new Vector2d(3, 4)));
         IEngine engine = new SimulationEngine(directions, map, positions);
@@ -38,7 +38,7 @@ public class IntegrationTests {
     @Test
     void testNoAnimals() {
         String[] args = {"f", "b", "r", "l", "f", "f", "r", "r", "f", "f", "f", "f", "f" ,"f", "f", "f"};
-        ArrayList<MoveDirection> directions = new OptionsParser().parse(args);
+        ArrayList<MoveDirection> directions = new OptionsParser().parse(Arrays.stream(args).toList());
         IWorldMap map = new RectangularMap(10, 5);
         ArrayList<Vector2d> positions = new ArrayList<>();
         IEngine engine = new SimulationEngine(directions, map, positions);
@@ -54,7 +54,7 @@ public class IntegrationTests {
     @Test
     void testAnimalsCollisions() {
         String[] args = {"f", "r", "f", "r", "f", "f", "f", "f", "f", "f", "f", "f", "f" ,"f", "f", "f"};
-        ArrayList<MoveDirection> directions = new OptionsParser().parse(args);
+        ArrayList<MoveDirection> directions = new OptionsParser().parse(Arrays.stream(args).toList());
         IWorldMap map = new RectangularMap(10, 5);
         ArrayList<Vector2d> positions = new ArrayList<>(Arrays.asList(new Vector2d(2, 2), new Vector2d(2, 3)));
         IEngine engine = new SimulationEngine(directions, map, positions);
@@ -67,7 +67,7 @@ public class IntegrationTests {
     @Test
     void testPlaceOutsideBorder() {
         String[] args = {"f", "b", "r", "l", "f", "f", "r", "r", "f", "f", "f", "f", "f" ,"f", "f", "f"};
-        ArrayList<MoveDirection> directions = new OptionsParser().parse(args);
+        ArrayList<MoveDirection> directions = new OptionsParser().parse(Arrays.stream(args).toList());
         IWorldMap map = new RectangularMap(10, 5);
         ArrayList<Vector2d> positions = new ArrayList<>(Arrays.asList(new Vector2d(200, 2000), new Vector2d(-2, -3)));
 
@@ -77,7 +77,7 @@ public class IntegrationTests {
     @Test
     void testBorderCollisions() {
         String[] args = {"f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f", "f" ,"f", "f", "f"};
-        ArrayList<MoveDirection> directions = new OptionsParser().parse(args);
+        ArrayList<MoveDirection> directions = new OptionsParser().parse(Arrays.stream(args).toList());
         IWorldMap map = new RectangularMap(10, 5);
         ArrayList<Vector2d> positions = new ArrayList<>(List.of(new Vector2d(0, 0)));
         IEngine engine = new SimulationEngine(directions, map, positions);
