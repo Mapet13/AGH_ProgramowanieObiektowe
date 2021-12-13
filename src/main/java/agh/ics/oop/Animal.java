@@ -1,6 +1,5 @@
 package agh.ics.oop;
 
-import javax.swing.text.Position;
 import java.util.ArrayList;
 
 public class Animal implements IMapElement {
@@ -48,6 +47,16 @@ public class Animal implements IMapElement {
 
     public Vector2d getPosition() {
         return position;
+    }
+
+    @Override
+    public String getImagePath() {
+        return String.format("src/main/resources/%s.png", toString());
+    }
+
+    @Override
+    public String getName() {
+        return String.format("Z %s", position.toString());
     }
 
     public MapDirection getOrientation() {

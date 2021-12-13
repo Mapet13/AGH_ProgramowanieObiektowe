@@ -82,7 +82,7 @@ public class IntegrationTests {
         ArrayList<Vector2d> positions = new ArrayList<>(List.of(new Vector2d(0, 0)));
         IEngine engine = new SimulationEngine(directions, map, positions);
         engine.run();
-        
+
         assertTrue(map.isOccupied(new Vector2d(0, 5)));
     }
 

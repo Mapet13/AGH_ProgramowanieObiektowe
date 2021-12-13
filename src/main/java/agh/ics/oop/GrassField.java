@@ -35,6 +35,7 @@ public class GrassField extends AbstractWorldMap {
     public void place(Animal animal) throws IllegalArgumentException {
         super.place(animal);
         mapBoundary.add(animal);
+        animal.addObserver(mapBoundary);
     }
 
     @Override

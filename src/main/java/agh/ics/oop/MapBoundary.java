@@ -33,6 +33,6 @@ public class MapBoundary implements IPositionChangeObserver {
         oy.remove(pos);
     }
 
-    private SortedSet<Vector2d> ox = new TreeSet<>(Comparator.comparingInt(o -> o.x));
-    private SortedSet<Vector2d> oy = new TreeSet<>(Comparator.comparingInt(o -> o.y));
+    private final SortedSet<Vector2d> ox = new TreeSet<>(Comparator.comparingInt(o -> o.x));
+    private final SortedSet<Vector2d> oy = new TreeSet<>(Comparator.comparingInt(o -> o.y));
 }

@@ -6,19 +6,50 @@ import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class App extends Application {
+public class App extends Application implements IMapChangeObserver {
+    private ThreadedSimulationEngine engine;
 
     @Override
     public void start(Stage primaryStage) {
+        HBox upperPart = new HBox();
+        Button startButton = new Button();
+        TextField userInput = new TextField();
+        startButton.setText("Start");
+
+        startButton.setOnAction(e -> {
+            if (userInput.getText().isEmpty())
+                return;
+
+            engine.setDirections(new OptionsParser().parse(
+                    Arrays.stream(userInput.getText().split(" ")).toList()));
+            new Thread(engine).start();
+        });
+
+        upperPart.getChildren().add(0, startButton);
+        upperPart.getChildren().add(1, userInput);
+
+        VBox layout = new VBox();
         grid = new GridPane();
+
+        layout.getChildren().add(0, upperPart);
+        layout.getChildren().add(1, grid);
+
+        createGridMap();
+
+        Scene scene = new Scene(layout, width, height);
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private void createGridMap() {
         grid.setGridLinesVisible(true);
 
         Vector2d lowerLeft = map.getLowerLeft();
@@ -42,20 +73,13 @@ public class App extends Application {
             }
 
         }
-
-        Scene scene = new Scene(grid, width, height);
-
-        primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
     @Override
     public void init() {
-        ArrayList<MoveDirection> directions = new OptionsParser().parse(getParameters().getRaw());
         map = new GrassField(10);
         ArrayList<Vector2d> positions = new ArrayList<>(Arrays.asList(new Vector2d(2, 2), new Vector2d(3, 4)));
-        IEngine engine = new SimulationEngine(directions, map, positions);
-        engine.run();
+        engine = new ThreadedSimulationEngine(new OptionsParser().parse(getParameters().getRaw()), map, positions, this);
     }
 
     private void drawHeader(Vector2d lowerLeft, Vector2d upperRight) {
@@ -67,9 +91,11 @@ public class App extends Application {
 
     private void drawObject(Vector2d pos, Vector2d upperRight, Vector2d lowerLeft) {
         if (this.map.isOccupied(pos)) {
-            Object object = this.map.objectAt(pos);
+            IMapElement object = (IMapElement)this.map.objectAt(pos);
             if (object != null) {
-                addToGrid(object.toString(), pos.x - lowerLeft.x + 1, upperRight.y - pos.y + 1);
+                GuiElementBox box = new GuiElementBox(object);
+                grid.add(box.box, pos.x - lowerLeft.x + 1, upperRight.y - pos.y + 1);
+                GridPane.setHalignment(box.box, HPos.CENTER);
             }
         }
     }
@@ -80,6 +106,13 @@ public class App extends Application {
         GridPane.setHalignment(label, HPos.CENTER);
     }
 
+    @Override
+    public void onMapChanged() {
+        grid.getRowConstraints().clear();
+        grid.getColumnConstraints().clear();
+        grid.getChildren().retainAll(grid.getChildren().get(0));
+        createGridMap();
+    }
 
     private GridPane grid;
     private AbstractWorldMap map;

@@ -10,6 +10,16 @@ public class Grass implements IMapElement {
     }
 
     @Override
+    public String getImagePath() {
+        return "src/main/resources/grass.png";
+    }
+
+    @Override
+    public String getName() {
+        return "Trawa";
+    }
+
+    @Override
     public String toString() {
         return "*";
     }
